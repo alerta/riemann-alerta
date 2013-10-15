@@ -3,6 +3,14 @@ Riemann-to-Alerta
 
 Forward Riemann events to Alerta for a consolidated view and improved visualisation.
 
+Transform this ...
+
+![nagios](/docs/images/riemann.png?raw=true)
+
+Into this ...
+
+![alerta](/docs/images/alerta.png?raw=true)
+
 Installation
 ------------
 
