@@ -18,9 +18,10 @@ Replace the default riemann.config file with the example...
     $ wget https://raw.github.com/alerta/riemann-alerta/master/riemann.config
     $ sudo cp riemann.config /etc/riemann/
 
-Add the alerta integration thing...
+Add the alerta clojure library...
 
     $ wget https://raw.github.com/alerta/riemann-alerta/master/alerta.clj
+    $ sudo cp alerta.clj /etc/riemann/
 
 Configuration
 -------------
