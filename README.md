@@ -43,6 +43,7 @@ Testing
 
 Generate some test alerts by generating metrics using `riemann-health`...
 
+    $ sudo apt-get install ruby1.9.1 ruby1.9.1-dev
     $ sudo gem install riemann-tools
     $ riemann-health
 
