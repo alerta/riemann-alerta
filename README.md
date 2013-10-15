@@ -14,9 +14,9 @@ To install Riemann on Debian/Ubuntu...
 
 Replace the default riemann.config file with the example...
 
-    $ cd /etc/riemann
-    $ sudo mv riemann.config riemann.config.bak
+    $ sudo mv /etc/riemann/riemann.config{,.bak}
     $ wget https://raw.github.com/alerta/riemann-alerta/master/riemann.config
+    $ sudo cp riemann.config /etc/riemann/
 
 Add the alerta integration thing...
 
