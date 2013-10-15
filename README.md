@@ -14,6 +14,8 @@ To install Riemann on Debian/Ubuntu...
 
 Replace the default riemann.config file with the example...
 
+    $ cd /etc/riemann
+    $ sudo mv riemann.config riemann.config.bak
     $ wget https://raw.github.com/alerta/riemann-alerta/master/riemann.config
 
 Add the alerta integration thing...
@@ -23,7 +25,7 @@ Add the alerta integration thing...
 Configuration
 -------------
 
-Modify the alert and heartbeat endpoints depending on where the alerta API is located...
+Modify the alert and heartbeat endpoints in `aleta.clj` depending on where the alerta API is located...
 
 ```
 (def alerta-endpoints
@@ -41,7 +43,7 @@ Testing
 
 Generate some test alerts by generating metrics using `riemann-health`...
 
-    $ sudo gem install riemann-health
+    $ sudo gem install riemann-tools
     $ riemann-health
 
 License
