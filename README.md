@@ -17,8 +17,8 @@ Installation
 To install Riemann on Debian/Ubuntu...
 
     $ sudo apt-get install openjdk-7-jre
-    $ wget http://aphyr.com/riemann/riemann_0.2.2_all.deb
-    $ sudo dpkg -i riemann_0.2.2_all.deb
+    $ wget http://aphyr.com/riemann/riemann_0.2.4_all.deb
+    $ sudo dpkg -i riemann_0.2.4_all.deb
 
 Replace the default riemann.config file with the example...
 
@@ -38,8 +38,8 @@ Modify the alert and heartbeat endpoints in `aleta.clj` depending on where the a
 
 ```
 (def alerta-endpoints
-        {:alert "http://localhost:8080/alerta/api/v2/alerts/alert.json"
-        :heartbeat "http://localhost:8080/alerta/api/v2/heartbeats/heartbeat.json"})
+        {:alert "http://localhost:8080/api/alert"
+        :heartbeat "http://localhost:8080/api/heartbeat"})
 ```
 
 Start Riemann...
