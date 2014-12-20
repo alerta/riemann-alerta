@@ -9,7 +9,7 @@ Transform this ...
 
 Into this ...
 
-![alerta](/docs/images/alerta.png?raw=true)
+![alerta](/docs/images/riemann26-alerta-v3.png?raw=true)
 
 Installation
 ------------

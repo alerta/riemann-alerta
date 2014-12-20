@@ -1,11 +1,11 @@
 ; -*- mode: clojure; -*-
 ; vim: filetype=clojure
 
-(def version "3.0.0")
+(def version "3.1.0")
 
 (def alerta-endpoints
-	{:alert "http://localhost:8080/api/alert"
-	:heartbeat "http://localhost:8080/api/heartbeat"})
+	{:alert "http://localhost:8080/alert"
+	:heartbeat "http://localhost:8080/heartbeat"})
 
 (defn post-to-alerta
   "POST to the Alerta REST API."
@@ -36,9 +36,9 @@
    :group (get event :group "Performance")
    :value (:metric event)
    :severity (:state event)
-   :environment (get event :environment "infrastructure")
+   :environment (get event :environment "Production")
    :service [(get event :grid "Platform")]
-   :tags (:tags event)
+   :tags (if (empty? (:tags event)) [] (:tags event))
    :text (:description event)
    :rawData event})
 
