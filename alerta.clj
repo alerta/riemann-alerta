@@ -1,56 +1,60 @@
 ; -*- mode: clojure; -*-
 ; vim: filetype=clojure
 
-(def version "3.1.0")
+(ns alerta
+  "Forwards events to Alerta."
+  (:require [clj-http.client :as http]
+            [cheshire.core :as json])
+  (:use [riemann.common :only [localhost]]))
 
-(def alerta-endpoints
-	{:alert "http://localhost:8080/alert"
-	:heartbeat "http://localhost:8080/heartbeat"})
+(def version "5.0.0")
 
-(defn post-to-alerta
-  "POST to the Alerta REST API."
-  [url request]
-  (let [event-url url
-  	event-json (json/generate-string request)]
-  	(client/post event-url
-               {:body event-json
-                :socket-timeout 5000
-                :conn-timeout 5000
-                :content-type :json
-                :accept :json
-		; :debug true
-		; :debug-body true
-                :throw-entire-message? true})))
+(defn- post
+  "POST to the Alerta API."
+  [url body options]
+  (http/post url
+             (merge
+              {:body (json/generate-string body)
+               :headers (if-let [key (:key options)] {:authorization (format "Key %s" key)} {})
+               :content-type :json
+               :accept :json
+               :socket-timeout 5000
+               :conn-timeout 5000
+               :throw-entire-message? true}
+              options)))
 
-(defn format-alerta-event
+(defn- format-event
   "Formats an event for Alerta."
   [event]
-  {
-   :origin (str "riemann/" hostname)
-   :resource
-    (if (.contains (:service event) " ")
-      (let [[_ instance] (clojure.string/split (:service event) #" " 2)]
-        (str (:host event) ":" instance))
-        (:host event))
+  {:resource (:host event)
    :event (get event :event (:service event))
+   :environment (get event :environment "Production")
+   :severity (:state event)
+   :service [(get event :grid "Platform")]
    :group (get event :group "Performance")
    :value (:metric event)
-   :severity (:state event)
-   :environment (get event :environment "Production")
-   :service [(get event :grid "Platform")]
-   :tags (if (empty? (:tags event)) [] (:tags event))
    :text (:description event)
+   :tags (into [] (:tags event))
+   :origin (str "riemann/" (localhost))
+   :eventType "performanceAlert"
    :rawData event})
 
-(defn alerta
-  "Creates an alerta adapter.
-    (changed-state (alerta))"
-  [e]
-  (post-to-alerta (:alert alerta-endpoints) (format-alerta-event e)))
+(defn alert
+  "Forwards events to Alerta.
 
-(defn heartbeat [e] (post-to-alerta
-	(:heartbeat alerta-endpoints)
-	{:origin (str "riemann/" hostname)
-	   :tags [version]
-	   :type "Heartbeat"}))
+    ```clojure
+  (let [alert (alert {:endpoint \"...\"
+                     :key \"...\"
+                     :debug true})]
+    (changed-state alert))
+  ```"
+  [opts]
+  (let [opts (merge {:endpoint "http://localhost:8080"} opts)]
+    (fn [event] (post (str (:endpoint opts) "/alert") (format-event event) opts))))
 
+(defn heartbeat
+  "Sends heartbeat to Alerta."
+  [opts]
+  (let [opts (merge {:endpoint "http://localhost:8080"} opts)
+        hb-event {:origin (str "riemann/" (localhost)) :tags [version]}]
+    (fn [event] (post (str (:endpoint opts) "/heartbeat") hb-event opts))))
