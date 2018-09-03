@@ -16,9 +16,10 @@ Installation
 
 To install Riemann on Debian/Ubuntu...
 
+    $ export VERSION=0.3.1
     $ sudo apt-get install openjdk-7-jre
-    $ wget http://aphyr.com/riemann/riemann_0.2.4_all.deb
-    $ sudo dpkg -i riemann_0.2.4_all.deb
+    $ wget -nv https://github.com/riemann/riemann/releases/download/${VERSION}/riemann_${VERSION}_all.deb
+    $ sudo dpkg -i riemann_${VERSION}_all.deb
 
 Replace the default riemann.config file with the example...
 
@@ -34,12 +35,19 @@ Add the alerta clojure library...
 Configuration
 -------------
 
-Modify the alert and heartbeat endpoints in `aleta.clj` depending on where the alerta API is located...
+Include and require the Alerta plugin:
 
+```clojure
+(include "alerta.clj")
+(:require '[alerta :refer [alert heartbeat]])
 ```
-(def alerta-endpoints
-        {:alert "http://localhost:8080/api/alert"
-        :heartbeat "http://localhost:8080/api/heartbeat"})
+
+Set the alert and heartbeat endpoints depending on where the alerta API is located:
+
+```clojure
+; Alerta configuration
+(def alert (alerta/alert {:endpoint "https://alerta-api.herokuapp.com" :key "demo-key" :debug true}))
+(def heartbeat (alerta/heartbeat {:endpoint "https://alerta-api.herokuapp.com" :key "demo-key"}))
 ```
 
 Start Riemann...
@@ -59,4 +67,4 @@ Generate some test alerts by generating metrics using `riemann-health`...
 License
 -------
 
-Copyright (c) 2013 Nick Satterly. Available under the MIT License.
+Copyright (c) 2013,2018 Nick Satterly. Available under the MIT License.
